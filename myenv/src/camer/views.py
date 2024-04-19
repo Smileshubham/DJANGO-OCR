@@ -40,43 +40,56 @@
 #         return HttpResponse(status=500)
 
 # views.py
-
 import cv2
-from django.http import HttpResponse
+import base64
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
+def home(request):
+    return render(request, 'index.html')
+
 @csrf_exempt
+
+def open_camera (request):
+    cam1 = cv2.VideoCapture(0)
+    while True:
+        ret,frame=cam1.read()
+        if not ret:
+            print("Error")
+            break
+    cv2.imshow("testing",frame)
+    cam1.release()
+
+    # while True:
+    #     ret,frame=cam.read()
+    #     if not ret:
+    #         print ("Error")
+    #         break
+    #     return cv2.imshow("testing",frame)
+
+    # if not cam.isOpened():
+    #     return JsonResponse({'error': 'Failed to open camera'}, status=500)
+
+    # return JsonResponse({'success': 'Camera opened successfully'})
+
+
 def capture_image(request):
-    # Open the camera
     cam = cv2.VideoCapture(0)
 
-    # Check if the camera is opened successfully
     if not cam.isOpened():
-        return HttpResponse(status=500)
+        return JsonResponse({'error': 'Failed to open camera'}, status=500)
 
-    while True:
-        # Check if the frame is captured successfully
-        ret, frame = cam.read()
-
-        # Capture frame-by-frame
-        if not ret:
-            break
-
-        # Display the frame
-        cv2.imshow("Captured Image", frame)
-        
-        # Check for key press to exit
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-        elif cv2.waitKey(1)%256==32:
-            img_name="Screen_shot.png"
-            cv2.imwrite(img_name,frame)
-
-            # DISPLAY IMAGE TAKEN
-            cv2.imshow(img_name,frame) 
-    # Release the camera and close OpenCV windows
+    ret, frame = cam.read()
+    # cv2.imshow(frame)
     cam.release()
-    cv2.destroyAllWindows()
 
-    return HttpResponse(status=200)
+    if not ret:
+        return JsonResponse({'error': 'Failed to capture image'}, status=500)
+
+    _, buffer = cv2.imencode('.png', frame)
+    img_data = base64.b64encode(buffer).decode()
+
+    return JsonResponse({'img_data': img_data})
+
+

@@ -29,20 +29,34 @@ Including another URLconf
 #     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
 # )
 
-# urls.py
-
 from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from camer.views import capture_image
+from camer.views import capture_image, home,open_camera  # Import the home view
+# from camer.views import home, camera
+
+
+# urlpatterns = [
+#     path('admin/', admin.site.urls),
+#     path('', home, name='home'),  # Define a URL pattern for the root URL
+#     path('camera/', capture_image, name='capture_image'),
+# ]
+
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('camera/', capture_image, name='capture_image'),  # Define a URL pattern for the root URL
+    path('', home, name='index'),
+    path('open_camera/', open_camera, name='open_camera'),
+    path('capture/', capture_image, name='capture'),
 ]
+
+# urlpatterns = [
+#     path('', home, name='index'),
+#     path('camera/', camera, name='camera'),
+# ]
+
+
 
 # Add URL patterns for serving media files during development
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-
