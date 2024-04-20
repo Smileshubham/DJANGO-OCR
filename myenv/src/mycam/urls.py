@@ -33,7 +33,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from camer.views import capture_image, home,open_camera  # Import the home view
+from camer.views import capture_image, home,open_camera,opencam  # Import the home view
 # from camer.views import home, camera
 
 
@@ -49,6 +49,7 @@ urlpatterns = [
     path('', home, name='index'),
     path('open_camera/', open_camera, name='open_camera'),
     path('capture/', capture_image, name='capture'),
+    path('opencam/', opencam, name='opencam'),
 ]
 
 # urlpatterns = [

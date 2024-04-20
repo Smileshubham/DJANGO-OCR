@@ -1,0 +1,30 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Camera</title>
+</head>
+<body>
+    <button id="opencam">Opencam</button>
+
+    <script>
+        document.getElementById('opencam').addEventListener('click', function() {
+            fetch('opencam/')
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Failed to open camera.');
+                    }
+                })
+                .then(data => {
+                    alert('OCR Text: ' + data.text);
+                })
+                .catch(error => {
+                    alert('Error: ' + error.message);
+                });
+        });
+    </script>
+</body>
+</html> -->

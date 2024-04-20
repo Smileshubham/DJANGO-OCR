@@ -51,15 +51,31 @@ def home(request):
 
 @csrf_exempt
 
-def open_camera (request):
+def open_camera(request):
     cam1 = cv2.VideoCapture(0)
     while True:
         ret,frame=cam1.read()
+        
         if not ret:
             print("Error")
             break
-    cv2.imshow("testing",frame)
+    
+        cv2.imshow("testing",frame)
+        # k=cv2.waitKey(1)
+        # if k%256==27:
+        #     print("Closed")
+        #     break
+        # elif k%256==32:
+        #     img_name="Screen_shot.png"
+        #     cv2.imwrite(img_name,frame)
+
+        #     # DISPLAY IMAGE TAKEN
+        #     cv2.imshow(img_name,frame) 
+            
     cam1.release()
+    cv2.destroyAllWindows()
+    # cam1.release()
+
 
     # while True:
     #     ret,frame=cam.read()
@@ -93,3 +109,44 @@ def capture_image(request):
     return JsonResponse({'img_data': img_data})
 
 
+# new def
+
+from django.shortcuts import render
+from django.http import JsonResponse
+import cv2
+import pytesseract as tess
+from PIL import Image
+
+def opencam(request):
+    cam = cv2.VideoCapture(0)
+
+    if not cam.isOpened():
+        return JsonResponse({'error': 'Failed to open camera'}, status=500)
+
+    cv2.namedWindow("Lun")
+
+    while True:
+        ret, frame = cam.read()
+
+        if not ret:
+            return JsonResponse({'error': 'Failed to capture frame'}, status=500)
+
+        cv2.imshow("testing", frame)
+        k = cv2.waitKey(1)
+
+        if k & 0xFF == 27:
+            print("Closed")
+            break
+
+        elif k & 0xFF == 32:
+            img_name = "Screen_shot.png"
+            cv2.imwrite(img_name, frame)
+            cv2.imshow(img_name, frame)
+
+    cam.release()
+    cv2.destroyAllWindows()
+
+    img = Image.open('Screen_shot.png')
+    txt = tess.image_to_string(img)
+
+    return JsonResponse({'text': txt})

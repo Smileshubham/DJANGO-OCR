@@ -8,10 +8,13 @@
 <body>
     <div class="camera function">
         <h1>Capture Image</h1>
-        <img id="capturedImg" src="" alt="Captured Image">
-        <button id="opencamera">OPEN CAMERA</button>
+        <!-- <img id="capturedImg" src="" alt="Captured Image"> -->
+        <button id="openCamera">OPEN CAMERA</button>
         <button id="captureBtn">Capture Image</button>
         <button id="closeBtn">Close Application</button>
+        <button id="opencam">Opencam</button>
+        <br>
+    <video id="cameraFeed" autoplay></video>
     </div>
 
     <!-- JavaScript to handle button clicks -->
@@ -59,6 +62,20 @@
             // Close the current browser tab
             window.close();
         });
+
+        // video frame
+        document.getElementById('opencam').addEventListener('click', function() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    var videoElement = document.getElementById('cameraFeed');
+                    videoElement.srcObject = stream;
+                })
+                .catch(function(error) {
+                    console.error('Error accessing camera:', error);
+                    alert('Error accessing camera: ' + error.message);
+                });
+        });
+
     </script>
 
 </body>
