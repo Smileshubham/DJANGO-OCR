@@ -40,27 +40,32 @@
 #         return HttpResponse(status=500)
 
 # views.py
+import os
+import io
 import cv2
 import base64
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+import pytesseract as tess
+from PIL import Image
+
 
 def home(request):
     return render(request, 'index.html')
 
 @csrf_exempt
 
-def open_camera(request):
-    cam1 = cv2.VideoCapture(0)
-    while True:
-        ret,frame=cam1.read()
+# def open_camera(request):
+#     cam1 = cv2.VideoCapture(0)
+#     while True:
+#         ret,frame=cam1.read()
         
-        if not ret:
-            print("Error")
-            break
+#         if not ret:
+#             print("Error")
+#             break
     
-        cv2.imshow("testing",frame)
+#         cv2.imshow("testing",frame)
         # k=cv2.waitKey(1)
         # if k%256==27:
         #     print("Closed")
@@ -72,8 +77,8 @@ def open_camera(request):
         #     # DISPLAY IMAGE TAKEN
         #     cv2.imshow(img_name,frame) 
             
-    cam1.release()
-    cv2.destroyAllWindows()
+    # cam1.release()
+    # cv2.destroyAllWindows()
     # cam1.release()
 
 
@@ -90,6 +95,29 @@ def open_camera(request):
     # return JsonResponse({'success': 'Camera opened successfully'})
 
 
+# def capture_image(request):
+#     cam = cv2.VideoCapture(0)
+
+#     if not cam.isOpened():
+#         return JsonResponse({'error': 'Failed to open camera'}, status=500)
+
+#     ret, frame = cam.read()
+#     # cv2.imshow(frame)
+#     cam.release()
+
+#     if not ret:
+#         return JsonResponse({'error': 'Failed to capture image'}, status=500)
+
+#     _, buffer = cv2.imencode('.png', frame)
+#     img_data = base64.b64encode(buffer).decode()
+
+#     return JsonResponse({'img_data': img_data})
+
+
+# new def
+
+
+@csrf_exempt
 def capture_image(request):
     cam = cv2.VideoCapture(0)
 
@@ -97,7 +125,6 @@ def capture_image(request):
         return JsonResponse({'error': 'Failed to open camera'}, status=500)
 
     ret, frame = cam.read()
-    # cv2.imshow(frame)
     cam.release()
 
     if not ret:
@@ -108,15 +135,21 @@ def capture_image(request):
 
     return JsonResponse({'img_data': img_data})
 
+def read_file(request):
+    try:
+        img_path = os.path.join(os.getcwd(), 'Screen_shot.png')
+        if not os.path.exists(img_path):
+            return JsonResponse({'error': 'Image file not found'}, status=404)
 
-# new def
+        with open(img_path, 'rb') as file:
+            img_data = file.read()
+            img = Image.open(io.BytesIO(img_data))
+            text = tess.image_to_string(img)
+            return JsonResponse({'text': text})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
-from django.shortcuts import render
-from django.http import JsonResponse
-import cv2
-import pytesseract as tess
-from PIL import Image
-
+@csrf_exempt
 def opencam(request):
     cam = cv2.VideoCapture(0)
 
@@ -145,8 +178,3 @@ def opencam(request):
 
     cam.release()
     cv2.destroyAllWindows()
-
-    img = Image.open('Screen_shot.png')
-    txt = tess.image_to_string(img)
-
-    return JsonResponse({'text': txt})

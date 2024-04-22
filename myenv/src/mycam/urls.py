@@ -33,7 +33,11 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from camer.views import capture_image, home,open_camera,opencam  # Import the home view
+from camer.views import  home,opencam ,capture_image,read_file
+# from camer.views import capture_image, home,open_camera,opencam  
+
+
+# Import the home view
 # from camer.views import home, camera
 
 
@@ -47,9 +51,13 @@ from camer.views import capture_image, home,open_camera,opencam  # Import the ho
 
 urlpatterns = [
     path('', home, name='index'),
-    path('open_camera/', open_camera, name='open_camera'),
-    path('capture/', capture_image, name='capture'),
+    # path('open_camera/', open_camera, name='open_camera'),
+    # path('capture/', capture_image, name='capture'),
     path('opencam/', opencam, name='opencam'),
+    path('capture_image/', capture_image, name='capture_image'),
+    path('read_file/', read_file, name='read_file'),
+
+
 ]
 
 # urlpatterns = [

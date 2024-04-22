@@ -9,62 +9,65 @@
     <div class="camera function">
         <h1>Capture Image</h1>
         <!-- <img id="capturedImg" src="" alt="Captured Image"> -->
-        <button id="openCamera">OPEN CAMERA</button>
+        <!-- <button id="openCamera">OPEN CAMERA</button>
         <button id="captureBtn">Capture Image</button>
-        <button id="closeBtn">Close Application</button>
+        <button id="closeBtn">Close Application</button> -->
         <button id="opencam">Opencam</button>
         <br>
     <video id="cameraFeed" autoplay></video>
+    <button id="captureBtn">Capture Image</button>
+        <button id="readBtn">Read File</button>
     </div>
 
     <!-- JavaScript to handle button clicks -->
 
     <script>
-        document.getElementById('captureBtn').addEventListener('click', function() {
-            // Send request to capture image
-            fetch('capture/')
-                .then(response => {
-                    if (response.ok) {
-                        return response.json(); // Parse JSON response
-                    } else {
-                        throw new Error('Failed to capture image.');
-                    }
-                })
-                .then(data => {
-                    // Update captured image src
-                    document.getElementById('capturedImg').src = 'data:image/png;base64,' + data.img_data;
-                    // Display success message
-                    alert('Image captured successfully!');
-                })
-                .catch(error => {
-                    // Display error message
-                    alert('Error: ' + error.message);
-                });
-        });
+        // document.getElementById('captureBtn').addEventListener('click', function() {
+        //     // Send request to capture image
+        //     fetch('capture/')
+        //         .then(response => {
+        //             if (response.ok) {
+        //                 return response.json(); // Parse JSON response
+        //             } else {
+        //                 throw new Error('Failed to capture image.');
+        //             }
+        //         })
+        //         .then(data => {
+        //             // Update captured image src
+        //             document.getElementById('capturedImg').src = 'data:image/png;base64,' + data.img_data;
+        //             // Display success message
+        //             alert('Image captured successfully!');
+        //         })
+        //         .catch(error => {
+        //             // Display error message
+        //             alert('Error: ' + error.message);
+        //         });
+        // });
 
-        document.getElementById('openCamera').addEventListener('click', function() {
-            // Send request to open the camera
-            fetch('open_camera/')
-                .then(response => {
-                    if (response.ok) {
-                        alert('Camera opened successfully!');
-                    } else {
-                        throw new Error('Failed to open camera.');
-                    }
-                })
-                .catch(error => {
-                    // Display error message
-                    alert('Error: ' + error.message);
-                });
-        });
+        // document.getElementById('openCamera').addEventListener('click', function() {
+        //     // Send request to open the camera
+        //     fetch('open_camera/')
+        //         .then(response => {
+        //             if (response.ok) {
+        //                 alert('Camera opened successfully!');
+        //             } else {
+        //                 throw new Error('Failed to open camera.');
+        //             }
+        //         })
+        //         .catch(error => {
+        //             // Display error message
+        //             alert('Error: ' + error.message);
+        //         });
+        // });
 
-        document.getElementById('closeBtn').addEventListener('click', function() {
-            // Close the current browser tab
-            window.close();
-        });
+        // document.getElementById('closeBtn').addEventListener('click', function() {
+        //     // Close the current browser tab
+        //     window.close();
+        // });
 
         // video frame
         document.getElementById('opencam').addEventListener('click', function() {
+            fetch('/opencam/')
             navigator.mediaDevices.getUserMedia({ video: true })
                 .then(function(stream) {
                     var videoElement = document.getElementById('cameraFeed');
@@ -75,7 +78,38 @@
                     alert('Error accessing camera: ' + error.message);
                 });
         });
+            
+        document.getElementById('captureBtn').addEventListener('click', function() {
+            fetch('/capture_image/')
+                .then(response => {
+                    if (response.ok) {
+                        alert('Image captured successfully!');
+                    } else {
+                        throw new Error('Failed to capture image.');
+                    }
+                })
+                .catch(error => {
+                    alert('Error: ' + error.message);
+                });
+        });
 
+        document.getElementById('readBtn').addEventListener('click', function() {
+            fetch('/read_file/')
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Failed to read file.');
+                    }
+                })
+                .then(data => {
+                    alert('File content: ' + data.text);
+                })
+                .catch(error => {
+                    alert('Error: ' + error.message);
+                });
+        });
+    
     </script>
 
 </body>
